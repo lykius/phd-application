@@ -1,0 +1,68 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+\usepackage{caption}
+\captionsetup{font=footnotesize}
+
+\author{Luca De Luigi}
+\title{FPGA-Based Accelerators of Deep Learning Neural Networks: Definition of Algorithmic Optimization Techniques using Neural Architecture Search}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{State of the art}
+Thanks to recent advances in digital technologies and to the availability of huge amount of data (Big Data), Deep Learning, a sub-field of Artificial Intelligence (more specifically of Machine Learning), has proved its effectiveness in several complex applications including Image Recognition, Natural Language Processing, Image and Music Generation, Medical Analysis, Self-Driving Cars and Robotics (see \cite{deep_learning_book} for further details).\\
+Deep Learning relies heavily on neural networks, which allow to solve a wide range of pattern recognition problems, even when these patterns are difficult to find also for humans.\\
+On the downside, the great capabilities of neural networks come with a high computational and storage complexity that makes their execution on general purpose CPUs almost impossible. Consequentely, research is focusing on hardware accelerators such as GPUs (Graphic Process Units), ASICs (integrated circuits) or FPGAs (Field Programmable Gate Arrays). GPUs are the most widely used hardware accelerators for improving neural network performances, because of their high memory bandwidth and throughput in floating-point matrix-based operations. Moreover, high-level programming frameworks like Tensorflow and PyTorch provide easy-to-use interfaces for GPUs and make the implementation of neural networks on this kind of hardware straightforward. However, GPUs are usually not efficient in terms of power consumption, motivating the research of different platforms.\\
+ASICs and FPGAs have relatively limited memory, I/O bandwidths and computing resources but can achieve good performance allowing the definition of custom hardware accelerators. While ASICs require a long and expensive development cycle, FPGAs are gradually becoming a promising platform for energy-efficient neural network processing, thanks to the high level of parallelism, the low power consumption and the low-cost reconfigurability.\\
+As shown in figure \ref{fig:fpga_papers_number} (taken from \cite{wang_survey_2018}), during the last few years many researchers focused their attention on the implementation of FPGA-based neural network accelerators.
+
+\begin{figure}[h]
+	\centering	
+	\includegraphics[width=\textwidth]{fpga_papers_number}
+	\caption{Development history of FPGA-based neural network accelerators.}
+	\label{fig:fpga_papers_number}
+\end{figure}
+
+A lot of different strategies have been tried to implement these architectures: a quite detailed review can be found in \cite{shawahna_review_2019}, which reports a huge collection of FPGA-based accelerators, mostly regarding CNNs (Convolutional Neural Networks). The tecniques used are focused both on computation (e.g. exploitation of parallelism utilizing loop tiling and loop unrolling) and on data access (e.g. effective use of internal memory to maximize data reuse, operation pipelining, effective use of data sizes to minimize memory footprint and to optimize FPGA resource utilization). To get the big picture of the state of the art, we can refer to \cite{wang_survey_2018}, were 4 main categories of accelerators are presented:
+\begin{itemize}
+	\item Accelerators for a specific application
+	\item Accelerators for specific algorithms
+	\item Accelerators for common features of algorithms
+	\item General accelerator frameworks with hardware templates.
+\end{itemize}
+Quoting \cite{wang_survey_2018}: ``These four categories follow a process from customized to general, and the design difficulty is increasing. For the first two types of problems, design accelerators are currently more common, and the design difficulty is relatively small. For the latter two categories, especially the last category, the design difficulty is relatively large, and it is still in the research stage and has not been
+popularized.''\\
+The authors of \cite{wang_survey_2018} and \cite{shawahna_review_2019} propose several recommendations for future projects:
+\begin{itemize}
+	\item Keep working on memory management and data access
+	\item Extend the computation optimizations to the whole process (the major part of the reviewed works focus on matrix-based calculations, leaving untouched, for instance, the computation of activation functions, a key component in Deep Learning algorithms)
+	\item Focus on maximizing the working frequency of FPGA devices
+	\item Integrate several FPGA devices: a multi-FPGA cluster presents problems of scheduling and allocation, but can achieve better performances
+	\item Work on the development of automatic configuration and deployment frameworks.
+\end{itemize}
+The last point is quite interesting: one of the biggest disadvantages in the use of FPGA-based accelerators is related to the complexity associated to the design phase that requires programmers to master hardware programming languages like VHDL and Verilog, completely different from the high-level programming languages (C/C++, Python, ...) used in the development of Deep Learning models.\\
+Authors of \cite{shawahna_review_2019} explicitly recommend the development of a framework that includes a user-friendly interface that allows the user to easily specify the neural network model, all the required parameters, the FPGA platform that will be used for implementing the accelerator, the maximum tolerable error and other requirements: the framework will first perform optimizations to maximize parallelism and data reuse (considering the resources limitations) then it will automatically generate the neural network model that fits on the given platform, allowing also the user to evaluate the performance of the implemented design along with meaningful metrics (resource utilization, memory sizes and bandwidth, power dissipation, etc.).
+
+\section{Project description}
+*** Presentazione NAS
+\\*** Studio in dettaglio delle tecniche utilizzate
+\\*** Utilizzo di NAS per definire tecniche algoritmiche
+\\*** Sviluppo di un framework software per implementazione automatica
+
+\section{Expected results}
+These are expected results
+
+\bibliographystyle{unsrt}
+\bibliography{progetto}
+
+\end{document}
