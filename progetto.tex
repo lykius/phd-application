@@ -1,38 +1,40 @@
 \documentclass[11pt,a4paper]{article}
 
+\usepackage{geometry}
+\geometry{a4paper, margin=20mm}
+
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
+
 \usepackage{graphicx}
 \graphicspath{{./images/}}
+
 \usepackage{caption}
 \captionsetup{font=footnotesize}
 
 \author{Luca De Luigi}
-\title{FPGA-Based Accelerators of Deep Learning Neural Networks: Definition of Optimal Implementations using Neural Architecture Search}
+\date{}
+\title{FPGA-based Accelerators of Deep Learning Neural Networks: Optimal Implementations using Neural Architecture Search}
 
 \begin{document}
 
 \maketitle
 
 \section{State of the art}
-\subsection{FPGA-Based accelerators of Deep Learning Neural Networks}
+\subsection{FPGA-based accelerators of Deep Learning Neural Networks}
 Thanks to recent advances in digital technologies and to the availability of huge amount of data, Deep Learning, a sub-field of Artificial Intelligence (more specifically of Machine Learning), has proved its effectiveness in several complex applications including Image Recognition, Natural Language Processing, Image and Music Generation, Medical Analysis, Self-Driving Cars and Robotics (see \cite{deep_learning_book} for further details).\\
 Deep Learning relies heavily on neural networks, which allow to solve a wide range of pattern recognition problems, even when these patterns are difficult to find also for humans.\\
 On the downside, the great capabilities of neural networks come with a high computational and storage complexity that makes their execution on general purpose CPUs almost impossible. Consequentely, research is focusing on hardware accelerators such as GPUs (Graphic Process Units), ASICs (integrated circuits) or FPGAs (Field Programmable Gate Arrays). GPUs are the most widely used hardware accelerators for improving neural networks performances, because of their high memory bandwidth and throughput in floating-point matrix-based operations. Moreover, high-level programming frameworks like Tensorflow and PyTorch provide easy-to-use interfaces for GPUs and make the implementation of neural networks on this kind of hardware straightforward. However, GPUs are usually not efficient in terms of power consumption, motivating the research of different platforms.\\
 ASICs and FPGAs have relatively limited memory, I/O bandwidths and computing resources but can achieve good performance allowing the definition of custom hardware accelerators. While ASICs require a long and expensive development cycle, FPGAs are gradually becoming a promising platform for energy-efficient neural network processing, thanks to the high level of parallelism, the low power consumption and the low-cost reconfigurability.\\
 As shown in figure \ref{fig:fpga_papers_number} (taken from \cite{wang_survey_2018}), during the last few years many researchers focused their attention on the implementation of FPGA-based neural network accelerators.
-
 \begin{figure}[h]
     \centering	
     \includegraphics[width=\textwidth]{fpga_papers_number}
     \caption{Development history of FPGA-based neural network accelerators.}
     \label{fig:fpga_papers_number}
 \end{figure}
-
-A lot of different strategies have been tried to implement these architectures: a quite detailed review can be found in \cite{shawahna_review_2019}, which reports a huge collection of FPGA-based accelerators, mostly regarding CNNs (Convolutional Neural Networks). The tecniques used are focused both on computation (e.g. exploitation of parallelism utilizing loop tiling and loop unrolling) and on data access (e.g. effective use of internal memory to maximize data reuse, operation pipelining, effective use of data sizes to minimize memory footprint and to optimize FPGA resource utilization). To get the big picture of the state of the art, we can refer to \cite{wang_survey_2018}, were 4 main categories of accelerators are presented:
+It is possibile to find several explanations of this increasing interest towards FPGA-based accelerators: embedded systems are becoming extremely important both in industrial and consumer environments, mainly because of small sizes. To execute deep learning applications on such systems, small and highly efficient accelerators are needed: while GPUs cannot fit these requirements, being huge devices with great power consumption, FPGAs represent an ideal candidate to overcome these problems.
+\\A lot of different strategies have been tried to implement these architectures: a quite detailed review can be found in \cite{shawahna_review_2019}, which reports a huge collection of FPGA-based accelerators, mostly regarding CNNs (Convolutional Neural Networks). The tecniques used are focused both on computation (e.g. exploitation of parallelism using loop tiling and loop unrolling) and on data access (e.g. effective use of internal memory to maximize data reuse, operation pipelining, effective use of data sizes to minimize memory footprint and to optimize FPGA resource utilization). To get the big picture of the state of the art, we can refer to \cite{wang_survey_2018}, were 4 main categories of accelerators are presented:
 \begin{itemize}
     \item Accelerators for a specific application
     \item Accelerators for specific algorithms
@@ -52,22 +54,27 @@ The authors of \cite{wang_survey_2018} and \cite{shawahna_review_2019} propose s
 The last point is quite interesting: one of the biggest disadvantages in the use of FPGA-based accelerators is related to the complexity associated to the design phase that requires programmers to master hardware programming languages like VHDL and Verilog, completely different from the high-level programming languages (C/C++, Python, ...) used in the development of Deep Learning models.\\
 Authors of \cite{shawahna_review_2019} explicitly recommend the development of a framework that includes a user-friendly interface that allows the user to easily specify the neural network model, all the required parameters, the FPGA platform that will be used for implementing the accelerator, the maximum tolerable error and other requirements: the framework will first perform optimizations to maximize parallelism and data reuse (considering the resources limitations) then it will automatically generate the neural network model that fits on the given platform, allowing also the user to evaluate the performance of the implemented design along with meaningful metrics (resource utilization, memory sizes and bandwidth, power dissipation, etc.).
 \subsection{Neural Architecture Search}
-The success of deep learning is mainly due to its ability to extract automatically the features needed for a complex pattern recognition problem, learning them from data rathern then requiring a manual configuration of such features. To achieve this result, though, more and more complicated networks are manually designed and the architectures on which neural networks are based are often so complicated that it's quite hard to understand if a given architecture is the optimal one for a specific task.
+The success of deep learning is mainly due to its ability to extract automatically the features needed for a complex pattern recognition problem, learning them from data rathern then requiring a manual configuration. To achieve this result, though, more and more complicated networks are manually designed and the architectures on which neural networks are based are often so complicated that it's quite hard to understand if a given architecture is the optimal one for a specific task.
 \\Several studies focused on the resolution of this problem and brought to the definition of AutoML (Automated Machine Learning), the process of automating all the aspects of machine learning applications, also the ones that still requires a huge manual work (e.g. algorithm selection, architecture design, hyperparameters configuration).
 \\Among the areas of AutoML, Neural Architecture Search (NAS) gained a great attention in the past few years: the idea is to use automatic algorithms to find the optimal neural network architecture for a specific task. Several techniques have been proposed: a good review can be found in \cite{elsken_nas_2018}, where different approaches are described in terms of Search Space (the definition of which degrees of freedom are given on the searched architecture), Search Strategy (the strategy with which the algorithm goes through the Search Space) and Performance Estimation Strategy (the way used by the algorithm to estimate the performance of a given architecture).
 \\The idea proposed in this paper is to use NAS to find optimal neural networks architectures for FPGA-based accelerators. A first step in this direction can be found in \cite{jiang_nas_fpga_2019}, where authors present a hardware-aware NAS framework to find optimal neural networks architectures given hardware constraints. To achieve this goal, the Search Space of the NAS framework was enriched with a typical FPGA metric: the latency. Authors defined also a series of algorithmic techniques to evaluate the latency of a given neural network once implemented on FPGA: these techniques are needed in the Performance Estimation phase of the NAS process to cut off architectures that cannot fit the latency requirements. Results show that, with respect to optimal architectures found by a general NAS framework, this approach can lead to other architectures with considerely reduced latency and small loss of accuracy (less than 1\%).
 
 \section{Project description}
-\subsection{Implementation of a FPGA-Aware NAS framework}
-Define a NAS framework capable of finding the optimal neural network architecture given all the requirements of a specific FPGA device. Starting from the approach proposed in \cite{jiang_nas_fpga_2019}, the aim of this work is to improve it enriching the Search Space of a newly developed NAS framework with FPGA devices requirements other than the latency, such as memory and computational resources, I/O bandwith and power consumption.
-\subsection{Definition of algorithmic optimization techniques}
-Apply the new NAS framework to several deep learning neural networks (e.g. CNNs, RNNs, GANs) and study, for each of these networks, the mapping between the input architecture and the optimal output architecture to see if it's possible to come up with algorithmic techniques that can be applied in early stages of the neural network design process. In fact, considering that Neural Architecture Search often requires a great computational effort, it could be quite convenient to apply such optimization techniques (even manually) in the first design phases. The focus is on the definition of techniques as general as possible, that can be applied to a wide set of applications, in contrast with application-specific optimizations.
-\subsection{Implementation of a software framework for automatic FPGA implementations}
-Following the recommendations from \cite{wang_survey_2018} and \cite{shawahna_review_2019}, the final step of the project is the realization of a software framework that allows the automatic implementation of FPGA-Based accelerators for neural networks. The framework should take as inputs the neural network model designed with high-level programming frameworks (e.g. Tensorflow, PyTorch, ...) and the FPGA device characteristics (it could be also possible to decide between a fixed preset of FPGA devices already known by the framework); then, it should use the NAS framework and the techniques defined in the previous points to implement the optimal architecture that fits the FPGA device requirements. The framework should also leave some degrees of choice to the user, who, for instance, could ask to optimize the neural network architecture focusing more on the accuracy performances rather than the power consumption or the use of hardware resources.
-\\A good starting point for the technical aspects of the realization of such a software framework is represented by the projects presented in \cite{duarte_hls4ml_2018}, which describes a software tool currently under development capable of translating neural networks defined with high-level languages in Vivado HLS models that can be then compiled in FPGA hardware designs, and in \cite{noronha_leflow_2018}, which uses Google’s XLA compiler to translate Tensorflow specifications directly in LLVM code that can then be used with a high-level synthesis tool to automatically generate hardware.
+\subsection{FPGA-aware NAS framework}
+The first goal of the project is the definition of a NAS framework capable of finding the optimal architecture for an FPGA-based accelerator of a deep learning neural network, given all the requirements of a specific FPGA device. Starting from the approach proposed in \cite{jiang_nas_fpga_2019}, the aim of this work is to improve it enriching the Search Space of a newly developed NAS framework with FPGA devices requirements other than the latency, such as memory and computational resources, I/O bandwith and power consumption.
+\subsection{Algorithmic optimization techniques}
+The second goal of the project is the application of the FPGA-aware NAS framework to several deep learning neural networks (e.g. CNNs, RNNs, GANs) and study, for each of these networks, the mapping between the input architecture and the optimal output architecture to see if it is possible to come up with algorithmic techniques that can be applied in early stages of the neural network design process. In fact, considering that Neural Architecture Search often requires a great computational effort, it could be quite convenient to apply such optimization techniques (even manually) in the first design phases. The focus is on the definition of techniques as general as possible, that can be applied to a wide set of applications, in contrast with application-specific optimizations.
+\subsection{Software framework for automatic FPGA implementations}
+Following recommendations from \cite{wang_survey_2018} and \cite{shawahna_review_2019}, the final step of the project is the realization of a software framework that allows the automatic implementation of FPGA-based accelerators for neural networks. The framework should take as inputs the neural network model designed with high-level programming frameworks (e.g. Tensorflow, PyTorch, ...) and the FPGA device characteristics (it could be also possible to decide between a fixed preset of FPGA devices already known by the framework); then, it should use the NAS framework and the techniques defined in the previous points to implement the optimal architecture that fits the FPGA device requirements. The framework should also leave some degrees of choice to the user, who, for instance, could ask to optimize the neural network architecture focusing more on the accuracy performances rather than the power consumption or the use of hardware resources.
+\\A good starting point for the technical aspects of the realization of such a software framework is represented by the projects presented in \cite{duarte_hls4ml_2018}, which describes a software tool currently under development capable of translating neural networks defined with high-level languages in Vivado HLS models that can be then compiled in FPGA hardware designs, and in \cite{noronha_leflow_2018}, which uses Google’s XLA compiler to translate Tensorflow specifications directly into LLVM code that can then be used with a high-level synthesis tool to automatically generate hardware.
 
 \section{Expected results}
-These are expected results
+These are the principal expected results:
+\begin{enumerate}
+    \item Demonstrate that Neural Architecture Search can be applied to the design of FPGA-based accelerators of deep learning neural networks, reducing the time spent on manual research of optimal architectures and increasing the performances of such accelerators.
+    \item Define a set of algorithmic techniques that can be applied ``out of the box'' to the design of FPGA-based accelerators for a wide set of deep learning applications.
+    \item Create a software framework that can simplify the design of FPGA-based accelerators for neural networks, helping many researchers in this field to overcome some of the typical difficulties encountered and improving the already great intereset in the application of this technology to deep learning.
+\end{enumerate}
 
 \bibliographystyle{unsrt}
 \bibliography{progetto}
